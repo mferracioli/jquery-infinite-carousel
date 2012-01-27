@@ -39,6 +39,8 @@
 			previous: ".previous",
 			width: 500,
 			height: 250,
+			seconds: 5,
+			timer: null,
 			afterNext: function() {},
 			afterPrevious: function() {},
 			beforeNext: function() {},
@@ -65,6 +67,7 @@
 			clone.css("left", left);
 			clone.appendTo($(ul));
 			
+			autoNext();
 			options.beforeNext();
 
 			$(ul).animate({ left: "-=" + options.width }, function(){
@@ -81,6 +84,7 @@
 			clone.css("left", left);
 			clone.prependTo($(ul));
 			
+			autoNext();
 			options.beforePrevious();
 
 			$(ul).animate({ left: "+=" + options.width }, function(){
@@ -88,6 +92,21 @@
 				options.afterPrevious();
 			});
 		});
+		
+		if(options.seconds > 0) {
+			autoNext();
+			alert("ok");
+		}
+		
+		function autoNext() {
+			if(options.timer != null) {
+				window.clearTimeout(options.timer);
+			}
+			
+			options.timer = window.setTimeout(function() {
+				$(options.next).click();
+			}, options.seconds * 1000);
+		}
 
 	};  
 })(jQuery);
