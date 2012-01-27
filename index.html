@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>jQuery Infinite Carousel</title>
+
+	<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	
+	<style type="text/css" media="screen">
+		.previous { z-index:999; position:absolute; bottom:0; left:0; }
+		.next { z-index:999; position:absolute; bottom:0; right:0; }
+		#carousel ul { padding:0; margin:0; list-style:none; }
+		#carousel ul li { padding:0; margin:0; }
+	</style>
+	
+</head>
+
+<body>
+	
+<div id="carousel">
+	<ul>
+		<li><a href="#" title="Google"><img src="http://www.google.com.br/images/srpr/logo3w.png" alt="Google" /></a></li>
+		<li><a href="#" title="Yahoo"><img src="http://l.yimg.com/a/i/ww/met/logo/20100416/yahoo_logo_br.png" alt="Yahoo" /></a></li>
+	</ul>
+	
+	<a class="previous" title="previous" href="javascript:void(0);">previous</a>
+	<a class="next" title="next" href="javascript:void(0);">next</a>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+(function($){  
+	$.fn.infiniteCarousel = function(options) {  
+
+		var defaults = {
+			next: ".next",
+			previous: ".previous",
+			width: 500,
+			height: 250,
+			onNext: function() {},
+			onPrevious: function() {}
+		};
+		
+		var options = $.extend(defaults, options);
+
+		var ul = $("ul", this);
+		
+		$(this).css({ width: options.width, height: options.height, overflow: "hidden", position: "relative" });
+		$(ul).css({ width: options.width, height: options.height, position: "relative" });
+		$("li", ul).css({ width: options.width, height: options.height, position: "absolute", top: 0 });
+		
+		$("ul li", this).each(function(i,li){
+			$(li).css("left", (i * options.width));
+		});
+		
+		$(options.next).click(function(){
+			var first = $("li:first", $(ul));
+			var clone = $("li:first", $(ul)).clone();
+			var left = $("li:last", $(ul)).position().left + options.width;
+
+			clone.css("left", left);
+			clone.appendTo($(ul));
+
+			$(ul).animate({ left: "-=" + options.width }, function(){
+				$(first).remove();
+				options.onNext();
+			});
+		});
+		
+		$(options.previous).click(function(){
+			var last = $("li:last", $(ul));
+			var clone = $(last).clone();
+			var left = $("li:first", $(ul)).position().left - options.width;
+
+			clone.css("left", left);
+			clone.prependTo($(ul));
+
+			$(ul).animate({ left: "+=" + options.width }, function(){
+				$(last).remove();
+				options.onPrevious();
+			});
+		});
+
+	};  
+})(jQuery);
+
+$(document).ready(function(){
+	$("#carousel").infiniteCarousel({ width:300, height:150 });
+});
+
+</script>
+
+</body>
+</html>
