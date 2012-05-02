@@ -7,20 +7,26 @@
 	<title>jQuery Infinite Carousel</title>
 
 	<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="jquery.infinitecarousel-0.0.1.js"></script>
 	
 	<style type="text/css" media="screen">
 		.previous { z-index:999; position:absolute; bottom:0; left:0; }
 		.next { z-index:999; position:absolute; bottom:0; right:0; }
 		#carousel ul { padding:0; margin:0; list-style:none; }
 		#carousel ul li { padding:0; margin:0; }
+		#carousel ul.pager { position:absolute; bottom:20px; left:0; }
+		#carousel ul.pager li { float:left; }
+		#carousel ul.pager li a { color:blue; }
+		#carousel ul.pager li.active a { color:red; }
 	</style>
-	
 </head>
 
 <body>
 	
 <div id="carousel">
 	<ul>
+		<li><a href="#" title="Google"><img src="http://www.google.com.br/images/srpr/logo3w.png" alt="Google" /></a></li>
+		<li><a href="#" title="Yahoo"><img src="http://l.yimg.com/a/i/ww/met/logo/20100416/yahoo_logo_br.png" alt="Yahoo" /></a></li>
 		<li><a href="#" title="Google"><img src="http://www.google.com.br/images/srpr/logo3w.png" alt="Google" /></a></li>
 		<li><a href="#" title="Yahoo"><img src="http://l.yimg.com/a/i/ww/met/logo/20100416/yahoo_logo_br.png" alt="Yahoo" /></a></li>
 	</ul>
@@ -30,85 +36,6 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
-
-(function($){  
-	$.fn.infiniteCarousel = function(options) {  
-
-		var defaults = {
-			next: ".next",
-			previous: ".previous",
-			width: 500,
-			height: 250,
-			seconds: 5,
-			timer: null,
-			afterNext: function() {},
-			afterPrevious: function() {},
-			beforeNext: function() {},
-			beforePrevious: function() {}
-		};
-		
-		var options = $.extend(defaults, options);
-
-		var ul = $("ul", this);
-		
-		$(this).css({ width: options.width, height: options.height, overflow: "hidden", position: "relative" });
-		$(ul).css({ width: options.width, height: options.height, position: "relative" });
-		$("li", ul).css({ width: options.width, height: options.height, position: "absolute", top: 0 });
-		
-		$("ul li", this).each(function(i,li){
-			$(li).css("left", (i * options.width));
-		});
-		
-		$(options.next).click(function(){
-			var first = $("li:first", $(ul));
-			var clone = $("li:first", $(ul)).clone();
-			var left = $("li:last", $(ul)).position().left + options.width;
-
-			clone.css("left", left);
-			clone.appendTo($(ul));
-			
-			autoNext();
-			options.beforeNext();
-
-			$(ul).animate({ left: "-=" + options.width }, function(){
-				$(first).remove();
-				options.afterNext();
-			});
-		});
-		
-		$(options.previous).click(function(){
-			var last = $("li:last", $(ul));
-			var clone = $(last).clone();
-			var left = $("li:first", $(ul)).position().left - options.width;
-
-			clone.css("left", left);
-			clone.prependTo($(ul));
-			
-			autoNext();
-			options.beforePrevious();
-
-			$(ul).animate({ left: "+=" + options.width }, function(){
-				$(last).remove();
-				options.afterPrevious();
-			});
-		});
-		
-		if(options.seconds > 0) {
-			autoNext();
-		}
-		
-		function autoNext() {
-			if(options.timer != null) {
-				window.clearTimeout(options.timer);
-			}
-			
-			options.timer = window.setTimeout(function() {
-				$(options.next).click();
-			}, options.seconds * 1000);
-		}
-
-	};  
-})(jQuery);
 
 $(document).ready(function(){
 	$("#carousel").infiniteCarousel({ width:300, height:150 });
